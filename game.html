@@ -1,0 +1,135 @@
+<!--
+Author : Raja Shaikh
+Date : 12 March 2013
+Description : This is a simple experiment to write AI.
+-->
+<!DOCTYPE html>
+<html>
+<head>
+<title>New Game</title>
+<style type="text/css">
+div#wrapper {
+	width: 450px;
+	margin: 0px auto;
+	text-align: center;
+}
+table tr td{
+	border: 1px dashed gray;
+}
+</style>
+<script type="text/javascript" language="javascript">
+//global section
+var start_btn;
+myTime = 45;
+var limit = myTime;
+var table1;
+//--------------
+//onload section
+window.onload = function(){
+	//start from here
+	start_btn = document.getElementById('start_btn');
+	table1 = (document.getElementsByTagName('table'))[0];
+
+	document.getElementById('newgame_btn').onclick = function(){
+		if(limit == myTime){
+			loadNewGame();
+			start_btn.onclick = function(){clickHandler(true);timeHandler();this.onclick = false;}
+		}
+	}
+}
+//--------------
+function randomNumber(){
+	var num = Math.round(Math.random() * 99);
+	num = (num < 10) ? "0" + num: num;
+	return num;
+}
+
+function loadNewGame (){
+	table1.innerHTML = "";
+	limit = myTime;
+	for(var i = 0; i < 8; i++){
+		var newRow = table1.insertRow(-1);
+		for(var j = 0; j < 8; j++){
+			var newCell = newRow.insertCell(j)
+			newCell.setAttribute("bgcolor","#FFF7E6")
+			newCell.innerHTML = randomNumber();
+		}
+	}
+	document.getElementById('timelimit').innerHTML = "Press Start Game Button";
+}
+
+function timeHandler(){
+	document.getElementById('timelimit').innerHTML = "Remaining Time : " + limit;
+	if(limit <= 0){
+		limit = myTime;
+		checkGame();
+	}
+	else{
+		limit--;
+		setTimeout(timeHandler, 1000);
+	}
+}
+
+function clickHandler(foo){
+for(var i = 0; i < document.getElementsByTagName('td').length; i++)
+{
+	if(foo){
+	document.getElementsByTagName('td')[i].onclick = function(){
+		this.setAttribute("bgcolor","#656565")
+		this.onclick = false;
+	}
+	}
+	else{
+	document.getElementsByTagName('td')[i].onclick = false;
+	}
+}
+}
+
+function checkGame(){
+	var container = 0;
+	var flag = true;
+	var cout = 0;
+	var data = document.getElementsByTagName('td');
+	for(var i = 0; i < data.length; i++){
+		container = data[i].innerHTML;
+		if(data[i].innerHTML == "09"){
+			container = "9";
+		}
+		if(data[i].innerHTML == "08"){
+			container = "8";
+		}
+		if(parseInt(container) % 2 == 0){
+			if(data[i].getAttribute('bgcolor') != "#656565"){
+				cout++;
+				flag = false;
+				data[i].setAttribute("bgcolor","red")
+			}
+			
+		}
+	}
+	var mess = (flag) ? "You Win": "You Loos " + cout + " More Remaining";
+	document.getElementById('timelimit').innerHTML = "Time Out : " + ((flag) ? "You Win": "You Loos " + cout + " More Remaining");
+	clickHandler(false);
+	if(confirm(mess + ", Do You Want To Play Again ? "))
+	{
+		loadNewGame();
+		start_btn.onclick = function(){clickHandler(true);timeHandler();this.onclick = false;}
+	}
+}
+</script>
+</head>
+<body>
+<div id="wrapper">
+<p>
+You Have To Select All Even Number In Just 45 Sec From The Given Table To Win This Game.</br>
+<button id="newgame_btn"><h1>New Game</h1></button>
+<button id="start_btn"><h1>Start Game</h1></button>
+</p>
+<div id="timelimit">
+&nbsp;
+</div>
+<table cellspacing="10" cellpadding="10">
+</table>
+</div>
+</body>
+</html>
